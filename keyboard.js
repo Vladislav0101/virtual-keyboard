@@ -76,7 +76,7 @@ const KEYBOARD = {
         };
         keyLayout.forEach((key, index) => {
             const keyElement = document.createElement('button');
-            if (localStorage.getItem('lang') === 'en') {
+            if (this.properties.language === 'en') {
                 var insertLineBreak = ['backspace', ']', 'enter', '/'].indexOf(key) !== -1;
             } else {
                 var insertLineBreak = ['backspace', 'ъ', 'enter', '.'].indexOf(key) !== -1
@@ -213,7 +213,6 @@ const KEYBOARD = {
                     keyElement.textContent = key.toLowerCase();
 
                     keyElement.addEventListener('click', () => {
-                        console.log(this.properties.language);
 
                         if (this.properties.language === 'en') {
                             if (this.properties.checkShift) {
