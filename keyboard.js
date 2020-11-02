@@ -1,3 +1,5 @@
+alert('Доброго времени суток! \n Язык меняется: \n -- на физической клавиатуре - сочетванием клавиш shift + alt; \n -- на виртуальной - посредством нажатия на клавишу шара.  ')
+
 function playSpace() {
     let myAudio = new Audio;
     myAudio.src = "/sounds/space.mp3";
@@ -19,6 +21,30 @@ function playOut() {
 function playEnter() {
     let myAudio = new Audio;
     myAudio.src = "/sounds/enter.mp3";
+    myAudio.play();
+}
+
+function playShift() {
+    let myAudio = new Audio;
+    myAudio.src = "/sounds/shift.mp3";
+    myAudio.play();
+}
+
+function playCaps() {
+    let myAudio = new Audio;
+    myAudio.src = "/sounds/caps.mp3";
+    myAudio.play();
+}
+
+function playBackspace() {
+    let myAudio = new Audio;
+    myAudio.src = "/sounds/backspace.mp3";
+    myAudio.play();
+}
+
+function mainRU() {
+    let myAudio = new Audio;
+    myAudio.src = "/sounds/mainRU.mp3";
     myAudio.play();
 }
 const KEYBOARD = {
@@ -67,7 +93,7 @@ const KEYBOARD = {
             "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]",
             "caps", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "enter",
             "done", "shift", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/",
-            "voice", "space"
+            "voice", "space", "left", "right"
         ];
 
         // Create HTML for an icon
@@ -92,13 +118,13 @@ const KEYBOARD = {
                     keyElement.innerHTML = createIconHtml('language');
 
                     keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').focus();
                         if (this.properties.language === 'en') {
                             this.properties.language = 'ru';
                         } else {
                             this.properties.language = 'en';
                         }
                         this._toggleLanguage();
-                        console.log(this.properties.language);
                     });
 
                     keyElement.setAttribute('onclick', 'playMain()');
@@ -109,11 +135,12 @@ const KEYBOARD = {
                     keyElement.innerHTML = createIconHtml('backspace');
 
                     keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').focus();
                         this.properties.value = this.properties.value.substring(0, this.properties.value.length - 1);
                         this._triggerEvent('oninput');
                     });
 
-                    keyElement.setAttribute('onclick', 'playMain()');
+                    keyElement.setAttribute('onclick', 'playBackspace()');
                     break;
 
                 case 'caps':
@@ -121,21 +148,21 @@ const KEYBOARD = {
                     keyElement.innerHTML = createIconHtml('keyboard_capslock');
 
                     keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').focus();
                         this._toggleCapsLock();
                         keyElement.classList.toggle('keyboard__key--active', this.properties.capsLock);
                     });
 
-                    keyElement.setAttribute('onclick', 'playMain()');
+                    keyElement.setAttribute('onclick', 'playCaps()');
                     break;
 
                 case 'enter':
                     keyElement.classList.add('keyboard__key--wide');
                     keyElement.innerHTML = createIconHtml('keyboard_return');
-
                     keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').focus();
                         this.properties.value += '\n';
                         this._triggerEvent('oninput');
-                        console.log(this.properties.language);
                     });
 
                     keyElement.setAttribute('onclick', 'playEnter()');
@@ -146,6 +173,7 @@ const KEYBOARD = {
                     keyElement.innerHTML = createIconHtml('space_bar');
 
                     keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').focus();
                         this.properties.value += ' ';
                         this._triggerEvent('oninput');
                     });
@@ -158,15 +186,14 @@ const KEYBOARD = {
                     keyElement.innerHTML = createIconHtml('settings_voice');
 
                     keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').focus();
+                        keyElement.classList.toggle('red');
+
                         window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
                         var recognition = new SpeechRecognition();
                         recognition.interimResults = true;
-                        recognition.lang = 'ru-Ru';
-
-                        let p = document.createElement('p');
-                        const words = document.querySelector('.words');
-                        words.appendChild(p);
+                        recognition.lang = 'en-En';
 
                         recognition.addEventListener('result', e => {
                             const transcript = Array.from(e.results)
@@ -183,7 +210,7 @@ const KEYBOARD = {
                         recognition.start();
                     });
 
-                    keyElement.setAttribute('onclick', 'playSpace()');
+                    keyElement.setAttribute('onclick', 'playMain()');
                     break;
 
                 case 'done':
@@ -191,6 +218,7 @@ const KEYBOARD = {
                     keyElement.innerHTML = createIconHtml('check_circle');
 
                     keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').focus();
                         this.close();
                         this._triggerEvent('onclose');
                     });
@@ -202,8 +230,32 @@ const KEYBOARD = {
                     keyElement.classList.add('keyboard__key--wide');
                     keyElement.innerHTML = createIconHtml('keyboard');
                     keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').focus();
                         keyElement.classList.add('keyboard__key--shift', this.properties.checkShift);
                         this._toggleShift();
+                    });
+
+                    keyElement.setAttribute('onclick', 'playShift()');
+                    break;
+
+                case 'left':
+                    keyElement.classList.add('keyboard__key--wide');
+                    keyElement.innerHTML = createIconHtml('west');
+                    keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').selectionStart = document.getElementById('textarea').selectionEnd -= 1;
+                        document.getElementById('textarea').focus();
+                    });
+
+                    keyElement.setAttribute('onclick', 'playMain()');
+                    break;
+
+                case 'right':
+
+                    keyElement.classList.add('keyboard__key--wide');
+                    keyElement.innerHTML = createIconHtml('east');
+                    keyElement.addEventListener('click', () => {
+                        document.getElementById('textarea').selectionStart = document.getElementById('textarea').selectionEnd += 1;
+                        document.getElementById('textarea').focus();
                     });
 
                     keyElement.setAttribute('onclick', 'playMain()');
@@ -213,7 +265,7 @@ const KEYBOARD = {
                     keyElement.textContent = key.toLowerCase();
 
                     keyElement.addEventListener('click', () => {
-
+                        document.getElementById('textarea').focus();
                         if (this.properties.language === 'en') {
                             if (this.properties.checkShift) {
                                 switch (key) {
@@ -276,6 +328,7 @@ const KEYBOARD = {
                                         }
                                         break;
                                 }
+
                                 for (let key of this.elements.keys) {
                                     switch (key.innerHTML) {
                                         case '!':
@@ -352,7 +405,7 @@ const KEYBOARD = {
                                 "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ",
                                 "caps", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "enter",
                                 "done", "shift", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ".",
-                                "space"
+                                "voice", "space"
                             ];
                             let nmbLetter = 0;
 
@@ -457,12 +510,14 @@ const KEYBOARD = {
                                 this.properties.value += this.properties.capsLock ? keyLayoutRU[nmbLetter].toUpperCase() : keyLayoutRU[nmbLetter].toLowerCase();
                             }
                         }
-
-
                         this._triggerEvent('oninput');
                     });
 
-                    keyElement.setAttribute('onclick', 'playMain()');
+                    if (this.properties.language) {
+                        keyElement.setAttribute('onclick', 'playMain()');
+                    } else {
+                        keyElement.setAttribute('onclick', 'playMainRU()');
+                    }
                     break;
             }
             fragment.appendChild(keyElement);
@@ -488,7 +543,7 @@ const KEYBOARD = {
                 "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ",
                 "caps", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "enter",
                 "done", "shift", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ".",
-                "space"
+                "voice", "space"
             ];
             let i = 0;
 
@@ -507,7 +562,7 @@ const KEYBOARD = {
                 "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]",
                 "caps", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "enter",
                 "done", "shift", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/",
-                "space"
+                "voice", "space"
             ];
             let i = 0;
             for (let key of this.elements.keys) {
@@ -532,7 +587,6 @@ const KEYBOARD = {
     },
     _toggleShift() {
         this.properties.checkShift = true;
-        console.log(this.properties.checkShift);
         for (const key of this.elements.keys) {
             if (key.childElementCount === 0) {
                 if (this.properties.language === 'en') {
@@ -651,6 +705,104 @@ const KEYBOARD = {
         this.elements.main.classList.add('keyboard--hidden');
     }
 };
+document.getElementById('textarea').onfocus = () => {
+    document.addEventListener('keydown', function(event) {
+        KEYBOARD.properties.value += event.key;
+        let ARRAY = document.querySelectorAll('.keyboard__key');
+        let INDEX;
+        for (let i = 0; i < ARRAY.length; i++) {
+            if (event.key.toLowerCase() == ARRAY[i].innerHTML.toLowerCase()) {
+                ARRAY[i].classList.add('keyboard__key-fiz');
+            }
+        }
+        switch (event.keyCode) {
+            case 8:
+                ARRAY[11].classList.add('keyboard__key-fiz');
+                break;
+            case 13:
+                ARRAY[36].classList.add('keyboard__key-fiz');
+                break;
+            case 20:
+                ARRAY[24].classList.add('keyboard__key-fiz');
+                KEYBOARD._toggleCapsLock();
+                ARRAY[24].classList.toggle('keyboard__key--active');
+                break;
+            case 16:
+                ARRAY[38].classList.add('keyboard__key-fiz');
+                break;
+            case 32:
+                ARRAY[50].classList.add('keyboard__key-fiz');
+                break;
+            case 37:
+                ARRAY[51].classList.add('keyboard__key-fiz');
+                break;
+            case 39:
+                ARRAY[52].classList.add('keyboard__key-fiz');
+                break;
+        }
+    });
+    document.addEventListener('keyup', function(event) {
+        KEYBOARD.properties.value += event.key;
+        let ARRAY = document.querySelectorAll('.keyboard__key');
+        let INDEX;
+        for (let i = 0; i < ARRAY.length; i++) {
+            if (event.key.toLowerCase() == ARRAY[i].innerHTML.toLowerCase()) {
+                ARRAY[i].classList.remove('keyboard__key-fiz');
+            }
+        }
+        switch (event.keyCode) {
+            case 8:
+                ARRAY[11].classList.remove('keyboard__key-fiz');
+                break;
+            case 13:
+                ARRAY[36].classList.remove('keyboard__key-fiz');
+                break;
+            case 16:
+                ARRAY[38].classList.remove('keyboard__key-fiz');
+                break;
+            case 20:
+                ARRAY[24].classList.remove('keyboard__key-fiz');
+                break;
+            case 32:
+                ARRAY[50].classList.remove('keyboard__key-fiz');
+                break;
+            case 37:
+                ARRAY[51].classList.remove('keyboard__key-fiz');
+                break;
+            case 39:
+                ARRAY[52].classList.remove('keyboard__key-fiz');
+                break;
+        }
+    });
+};
+
+function runOnKeys(func, ...codes) {
+    let pressed = new Set();
+    document.addEventListener('keydown', function(event) {
+        pressed.add(event.code);
+
+        for (let code of codes) {
+            if (!pressed.has(code)) {
+                return;
+            }
+        }
+        pressed.clear();
+        func();
+    });
+    document.addEventListener('keyup', function(event) {
+        pressed.delete(event.code);
+    });
+};
+
+runOnKeys(
+    () => {
+        KEYBOARD.properties.language = KEYBOARD.properties.language === 'ru' ? 'en' : 'ru';
+        KEYBOARD._toggleLanguage();
+    },
+    "ShiftLeft",
+    "AltLeft"
+);
+
 window.addEventListener('DOMContentLoaded', function() {
     KEYBOARD.init();
 });

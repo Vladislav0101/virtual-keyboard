@@ -69,13 +69,22 @@ body {
     /* transform: translateY(-2px); */
 }
 
+.keyboard__key-fiz {
+    background: rgb(111, 167, 148);
+    transition: all .1s linear;
+}
+
+.red {
+    background: rgba(235, 20, 20, 0.761);
+}
+
 .keyboard__key--wide {
-    width: 10.5%;
+    width: 7.5%;
 }
 
 .keyboard__key--extra-wide {
     width: 36%;
-    min-width: 500px;
+    max-width: 500px;
 }
 
 .keyboard__key--activatable::after {
